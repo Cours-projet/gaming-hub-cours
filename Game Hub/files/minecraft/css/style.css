@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Minecraft&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Minecraft', 'Press Start 2P', monospace;
+    background: #000;
+    overflow: hidden;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+body.playing {
+    cursor: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.loading-content {
+    text-align: center;
+    color: #fff;
+}
+
+.loading-content h1 {
+    font-size: 2rem;
+    color: #ffff55;
+    text-shadow: 
+        4px 4px 0 rgba(0,0,0,0.8),
+        0 0 30px rgba(255,255,85,0.6);
+    margin-bottom: 40px;
+    letter-spacing: 3px;
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.loading-bar {
+    width: 400px;
+    height: 30px;
+    background: #2a2a2a;
+    border: 4px solid #000;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+    margin: 0 auto 20px;
+}
+
+.loading-progress {
+    height: 100%;
+    background: linear-gradient(180deg, #55ff55 0%, #33cc33 100%);
+    width: 0%;
+    transition: width 0.3s;
+}
+
+#loadingText {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+#main-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="32" height="32" fill="%23654321"/><rect x="32" width="32" height="32" fill="%238B4513"/><rect y="32" width="32" height="32" fill="%238B4513"/><rect x="32" y="32" width="32" height="32" fill="%23654321"/></svg>');
+    background-size: 64px 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9000;
+    animation: bgScroll 20s linear infinite;
+}
+
+@keyframes bgScroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 64px 64px; }
+}
+
+.menu-content {
+    text-align: center;
+}
+
+.game-title {
+    font-size: 3rem;
+    color: #ffff55;
+    text-shadow: 
+        6px 6px 0 rgba(0,0,0,0.8),
+        0 0 20px rgba(255,255,85,0.5);
+    margin-bottom: 10px;
+    letter-spacing: 4px;
+    animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.version {
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 50px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    letter-spacing: 1px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-btn {
+    font-family: 'Minecraft', 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    padding: 15px 40px;
+    background: linear-gradient(180deg, #6b6b6b 0%, #4a4a4a 100%);
+    color: #fff;
+    border: 4px solid #000;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 
+        inset -4px -4px 0 rgba(0,0,0,0.5),
+        inset 4px 4px 0 rgba(255,255,255,0.2),
+        0 6px 0 rgba(0,0,0,0.4);
+    min-width: 300px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.menu-btn:hover {
+    background: linear-gradient(180deg, #7b7b7b 0%, #5a5a5a 100%);
+    transform: translateY(-3px);
+    box-shadow: 
+        inset -4px -4px 0 rgba(0,0,0,0.5),
+        inset 4px 4px 0 rgba(255,255,255,0.3),
+        0 9px 0 rgba(0,0,0,0.4),
+        0 0 20px rgba(255,255,255,0.2);
+}
+
+.menu-btn:active {
+    transform: translateY(2px);
+    box-shadow: 
+        inset -2px -2px 0 rgba(0,0,0,0.5),
+        inset 2px 2px 0 rgba(255,255,255,0.2),
+        0 2px 0 rgba(0,0,0,0.4);
+}
+
+#game-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#gameCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #87ceeb 0%, #b0e0e6 50%, #90ee90 100%);
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+#hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+}
+
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 2px rgba(0,0,0,0.8);
+}
+
+.crosshair::before {
+    top: 50%;
+    left: 25%;
+    width: 50%;
+    height: 3px;
+    transform: translateY(-50%);
+}
+
+.crosshair::after {
+    left: 50%;
+    top: 25%;
+    width: 3px;
+    height: 50%;
+    transform: translateX(-50%);
+}
+
+.hotbar {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hotbar-slots {
+    display: flex;
+    gap: 4px;
+}
+
+.hotbar-slot {
+    width: 50px;
+    height: 50px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    position: relative;
+}
+
+.hotbar-slot.active {
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.hotbar-slot .count {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.health-bar {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 2px;
+}
+
+.hunger-bar {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    display: flex;
+    gap: 2px;
+}
+
+.heart, .food {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+}
+
+.debug-info {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: 10px;
+    text-shadow: 1px 1px 0 #000;
+    line-height: 1.6;
+}
+
+#inventory-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: all;
+}
+
+.inventory-container {
+    background: linear-gradient(180deg, #4a4a4a 0%, #2d2d2d 100%);
+    border: 5px solid #000;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.inventory-container h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(9, 50px);
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.inventory-slot {
+    width: 50px;
+    height: 50px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+}
+
+.inventory-slot:hover {
+    border-color: #fff;
+}
+
+.inventory-slot .count {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.crafting-area {
+    margin-top: 20px;
+}
+
+.crafting-area h3 {
+    color: #fff;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.crafting-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.crafting-result {
+    width: 50px;
+    height: 50px;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid #55ff55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 10px auto;
+}
+
+#pause-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: all;
+}
+
+.pause-content {
+    text-align: center;
+}
+
+.pause-content h2 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 40px;
+}
+
+.pause-content .menu-btn {
+    margin: 10px 0;
+}
+
+
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.settings-content {
+    background: linear-gradient(180deg, #4a4a4a 0%, #2d2d2d 100%);
+    border: 5px solid #000;
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.settings-content h2 {
+    color: #55ff55;
+    margin-bottom: 30px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.setting-group {
+    margin-bottom: 25px;
+}
+
+.setting-group label {
+    display: block;
+    color: #fff;
+    font-size: 0.6rem;
+    margin-bottom: 10px;
+}
+
+.setting-group input[type="range"] {
+    width: 100%;
+    height: 30px;
+    background: #2a2a2a;
+    border: 3px solid #000;
+    outline: none;
+    cursor: pointer;
+}
+
+.setting-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.setting-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.setting-buttons .menu-btn {
+    flex: 1;
+    font-size: 0.7rem;
+}

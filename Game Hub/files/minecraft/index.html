@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft 1.8.9 - Web Edition</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%238B4513' width='100' height='100'/><rect fill='%23654321' x='10' y='10' width='80' height='80'/></svg>">
+
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loading-content">
+            <h1>⛏ MINECRAFT 1.8.9 ⛏</h1>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loadingProgress"></div>
+            </div>
+            <p id="loadingText">Chargement...</p>
+        </div>
+    </div>
+
+    <div id="main-menu" class="hidden">
+        <div class="menu-content">
+            <h1 class="game-title">MINECRAFT</h1>
+            <p class="version">Version 1.8.9</p>
+            <div class="menu-buttons">
+                <button class="menu-btn" id="singleplayerBtn">🎮 Nouvelle Partie</button>
+                <button class="menu-btn" id="continueBtn" style="display:none;">▶️ Continuer</button>
+                <button class="menu-btn" id="multiplayerBtn">🌐 Multijoueur</button>
+                <button class="menu-btn" id="settingsBtn">⚙️ Options</button>
+                <button class="menu-btn" id="quitBtn">❌ Quitter</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container" class="hidden">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="hud">
+            <div class="crosshair"></div>
+            
+            <div class="hotbar">
+                <div class="hotbar-slots" id="hotbarSlots"></div>
+            </div>
+            
+            <div class="health-bar">
+                <div id="hearts"></div>
+            </div>
+            
+            <div class="hunger-bar">
+                <div id="hunger"></div>
+            </div>
+            
+            <div class="debug-info" id="debugInfo"></div>
+        </div>
+
+        <div id="inventory-screen" class="hidden">
+            <div class="inventory-container">
+                <h2>Inventaire</h2>
+                <div class="inventory-grid" id="inventoryGrid"></div>
+                <div class="crafting-area">
+                    <h3>Crafting</h3>
+                    <div class="crafting-grid" id="craftingGrid"></div>
+                    <div class="crafting-result" id="craftingResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pause-menu" class="hidden">
+            <div class="pause-content">
+                <h2>Jeu en Pause</h2>
+                <button class="menu-btn" id="resumeBtn">Reprendre</button>
+                <button class="menu-btn" id="saveBtn">Sauvegarder</button>
+                <button class="menu-btn" id="mainMenuBtn">Menu Principal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/minecraft.js"></script>
+</body>
+</html>

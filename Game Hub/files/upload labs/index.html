@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploadslabs Sim</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/icons.js"></script>
+</head>
+<body>
+    <!-- Login/Register Screen -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-content">
+            <div class="auth-logo">
+                <svg width="100" height="100" viewBox="0 0 120 120">
+                    <defs>
+                        <linearGradient id="authGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#5a9fd4"/>
+                            <stop offset="100%" style="stop-color:#4CAF50"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="55" fill="none" stroke="url(#authGrad)" stroke-width="4" opacity="0.3"/>
+                    <path d="M60 30 L60 75" stroke="url(#authGrad)" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M40 50 L60 30 L80 50" stroke="url(#authGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <rect x="35" y="80" width="50" height="8" rx="4" fill="url(#authGrad)"/>
+                </svg>
+            </div>
+            <h1 class="auth-title">Uploadslabs Sim</h1>
+            
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form">
+                <h2>Connexion</h2>
+                <div class="form-group">
+                    <label for="loginUsername">Nom d'utilisateur</label>
+                    <input type="text" id="loginUsername" class="form-input" placeholder="Entrez votre nom" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Mot de passe</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Entrez votre mot de passe" autocomplete="current-password" required>
+                </div>
+                <div class="auth-error" id="loginError"></div>
+                <button class="auth-btn primary" id="loginBtn">Se connecter</button>
+                <p class="auth-switch">Pas de compte? <a href="#" id="showRegister">Créer un compte</a></p>
+                <div style="text-align: center; margin-top: 15px; padding: 10px; background: rgba(76, 175, 80, 0.2); border: 1px solid rgba(76, 175, 80, 0.4); border-radius: 8px;">
+                    <p style="font-size: 0.9em; color: #4CAF50; margin: 0;">
+                        🎮 <strong>Compte de test disponible</strong>
+                    </p>
+                    <p style="font-size: 0.85em; color: rgba(255,255,255,0.7); margin: 5px 0 0 0;">
+                        Nom: <strong>test</strong> | Mot de passe: <strong>test</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form" style="display: none;">
+                <h2>Créer un compte</h2>
+                <div class="form-group">
+                    <label for="registerUsername">Nom d'utilisateur</label>
+                    <input type="text" id="registerUsername" class="form-input" placeholder="Choisissez un nom (min. 3 caractères)" autocomplete="username" required minlength="3">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Mot de passe</label>
+                    <input type="password" id="registerPassword" class="form-input" placeholder="Choisissez un mot de passe (min. 4 caractères)" autocomplete="new-password" required minlength="4">
+                </div>
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">Confirmer le mot de passe</label>
+                    <input type="password" id="registerPasswordConfirm" class="form-input" placeholder="Confirmez votre mot de passe" autocomplete="new-password" required>
+                </div>
+                <div class="auth-error" id="registerError"></div>
+                <button class="auth-btn primary" id="registerBtn">Créer le compte</button>
+                <p class="auth-switch">Déjà un compte? <a href="#" id="showLogin">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                    <defs>
+                        <linearGradient id="loadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#5a9fd4"/>
+                            <stop offset="100%" style="stop-color:#4CAF50"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="55" fill="none" stroke="url(#loadGrad)" stroke-width="4" opacity="0.3"/>
+                    <path d="M60 30 L60 75" stroke="url(#loadGrad)" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M40 50 L60 30 L80 50" stroke="url(#loadGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <rect x="35" y="80" width="50" height="8" rx="4" fill="url(#loadGrad)"/>
+                </svg>
+            </div>
+            <h1 class="loading-title">Uploadslabs Sim</h1>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <p class="loading-text" id="loadingText">Initialisation du réseau...</p>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <aside class="side-hud">
+            <div class="side-hud-header">
+                <h1>🔬 Uploadslabs</h1>
+            </div>
+            
+            <div class="side-hud-section">
+                <div class="hud-stat">
+                    <span class="hud-icon">💰</span>
+                    <div class="hud-stat-content">
+                        <span class="hud-stat-label">Crédits</span>
+                        <span id="credits" class="hud-stat-value">150</span>
+                    </div>
+                </div>
+                
+                <div class="hud-stat">
+                    <span class="hud-icon">📈</span>
+                    <div class="hud-stat-content">
+                        <span class="hud-stat-label">Revenus</span>
+                        <span id="creditsPerSec" class="hud-stat-value">0 ₵/s</span>
+                    </div>
+                </div>
+                
+                <div class="hud-stat">
+                    <span class="hud-icon">⚡</span>
+                    <div class="hud-stat-content">
+                        <span class="hud-stat-label">Énergie</span>
+                        <span id="energy" class="hud-stat-value">0/0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-hud-divider"></div>
+            
+            <div class="side-hud-section">
+                <div class="hud-stat">
+                    <span class="hud-icon">👤</span>
+                    <div class="hud-stat-content">
+                        <span class="hud-stat-label">Joueur</span>
+                        <span id="username" class="hud-stat-value">Joueur</span>
+                    </div>
+                </div>
+                
+                <div class="hud-stat">
+                    <span class="hud-icon">🎯</span>
+                    <div class="hud-stat-content">
+                        <span class="hud-stat-label">Niveau</span>
+                        <span id="level" class="hud-stat-value">1</span>
+                    </div>
+                </div>
+                
+                <div class="experience-bar-container">
+                    <div class="experience-bar" id="experienceBar"></div>
+                    <div class="experience-text" id="experienceText">0 / 100 XP</div>
+                </div>
+            </div>
+            
+            <div class="side-hud-divider"></div>
+            
+            <div class="side-hud-actions">
+                <button class="hud-action-btn" id="skillsBtn" title="Compétences">
+                    <span class="btn-icon">⭐</span>
+                    <span class="btn-label">Skills</span>
+                    <span class="btn-badge" id="skillPoints">0</span>
+                </button>
+                
+                <div class="dropdown-menu">
+                    <button class="dropdown-toggle" id="menuToggle">
+                        <span class="btn-icon">☰</span>
+                        <span class="btn-label">Menu</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <button class="dropdown-item" id="missionsMenuBtn">
+                            <span class="item-icon">🎯</span>
+                            <span class="item-label">Missions</span>
+                            <span class="mission-count" id="missionMenuBadge">0</span>
+                        </button>
+                        <button class="dropdown-item" id="helpMenuBtn">
+                            <span class="item-icon">ℹ️</span>
+                            <span class="item-label">Aide</span>
+                        </button>
+                        <button class="dropdown-item" id="settingsMenuBtn">
+                            <span class="item-icon">⚙️</span>
+                            <span class="item-label">Paramètres</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="hud-action-btn logout" id="logoutBtn" title="Déconnexion">
+                    <span class="btn-icon">🚪</span>
+                    <span class="btn-label">Quitter</span>
+                </button>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <div class="network-view">
+                <div class="canvas-container" id="canvasContainer">
+                    <div class="grid-background"></div>
+                    <div id="canvas"></div>
+                    
+                    <!-- Bottom Controls -->
+                    <div class="controls">
+                        <button class="control-btn" id="selectMode" title="Mode sélection">👆</button>
+                        <button class="control-btn" id="multiSelectMode" title="Sélection multiple">🔲</button>
+                        <button class="control-btn" id="sellMode" title="Mode vente">💰</button>
+                        <button class="control-btn" id="zoomIn" title="Zoom +">+</button>
+                        <button class="control-btn" id="zoomOut" title="Zoom -">−</button>
+                        <button class="control-btn" id="resetView" title="Réinitialiser">⌂</button>
+                    </div>
+                    
+                    <div class="zoom-level" id="zoomLevel">100%</div>
+                    
+                    <!-- Selection Actions -->
+                    <div class="selection-actions" id="selectionActions" style="display: none;">
+                        <span class="selection-count" id="selectionCount">0 sélectionné(s)</span>
+                        <button class="selection-action-btn" id="upgradeSelected">🔼 Améliorer</button>
+                        <button class="selection-action-btn" id="deleteSelected">🗑️ Supprimer</button>
+                        <button class="selection-action-btn" id="clearSelection">✖ Désélectionner</button>
+                    </div>
+                    
+                    <div class="sell-info" id="sellInfo" style="display: none;">
+                        💰 Mode vente - Cliquez pour sélectionner/désélectionner
+                        <button class="sell-confirm-btn" id="confirmSell">Vendre (<span id="sellCount">0</span>)</button>
+                        <button class="sell-cancel-btn" id="cancelSell">Annuler</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Shop Bar -->
+            <div class="shop-bar" id="shopBar">
+                <button class="shop-toggle-btn" id="shopToggleBtn">
+                    <span class="shop-toggle-icon">🛒</span>
+                    <span class="shop-toggle-text">Boutique</span>
+                </button>
+                <div class="shop-content" id="shopContent">
+                    <div class="shop-tabs">
+                        <button class="shop-tab active" data-tier="all">Tous</button>
+                        <button class="shop-tab" data-tier="power">⚡</button>
+                        <button class="shop-tab" data-tier="processing">🖥️</button>
+                        <button class="shop-tab" data-tier="gpu">🎮</button>
+                        <button class="shop-tab" data-tier="crypto">₿</button>
+                        <button class="shop-tab" data-tier="utility">⚙️</button>
+                    </div>
+                    <div id="shop" class="shop"></div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="info-panel">
+            <p id="message">Bienvenue! Construis ton premier réseau.</p>
+        </div>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>

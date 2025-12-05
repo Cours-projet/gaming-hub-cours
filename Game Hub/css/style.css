@@ -1,0 +1,284 @@
+:root {
+    --primary: #6366f1;
+    --secondary: #ec4899;
+    --bg-deep: #0f172a;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-main: #ffffff;
+    --text-muted: #94a3b8;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    font-size: 14px;
+    background: radial-gradient(circle at top left, #1e1b4b, transparent 40%),
+                radial-gradient(circle at bottom right, #312e81, transparent 40%),
+                #020617;
+    background-attachment: fixed;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-logo {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(to right, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--primary);
+}
+
+/* --- HEADER & GENERAL --- */
+header {
+    padding: 2rem 1rem 1rem; 
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin: 0;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(to right, #818cf8, #c084fc, #f472b6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.3));
+    animation: titleFloat 6s ease-in-out infinite;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem; 
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+/* --- FORMULAIRE SUPPORT --- */
+.form-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    background: var(--glass-bg);
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
+}
+
+/* --- DOCUMENTATION PAGE --- */
+.doc-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.doc-section {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.doc-section h2 {
+    color: var(--primary);
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.doc-content {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* --- RESTE DU CSS (HOME) --- */
+.search-container {
+    margin-top: 1.5rem; 
+    position: relative;
+    max-width: 350px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#searchBar {
+    width: 100%;
+    padding: 10px 20px; 
+    border-radius: 50px;
+    border: 1px solid var(--glass-border);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 0.9rem; 
+    outline: none;
+    transition: 0.3s;
+}
+
+#searchBar:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+main {
+    flex: 1;
+    max-width: 1000px; 
+    margin: 0 auto;
+    width: 100%;
+    padding: 1.5rem; 
+    perspective: 1000px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+    gap: 1.5rem; 
+    padding: 0.5rem;
+}
+
+.card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px; 
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.1s ease;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.card-image {
+    height: 120px; 
+    background: linear-gradient(to bottom, #0f172a, rgba(15, 23, 42, 0.5));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(15px);
+}
+
+.card-image svg {
+    width: 45px; 
+    height: 45px;
+    color: var(--primary);
+    filter: drop-shadow(0 0 8px var(--primary));
+}
+
+.card-content {
+    padding: 1.2rem; 
+    flex: 1;
+    transform: translateZ(25px);
+}
+
+.card h2 {
+    font-size: 1.3rem; 
+    margin: 0 0 0.3rem 0;
+    color: white;
+}
+
+.desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem; }
+
+.btn {
+    display: block;
+    text-align: center;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    color: white;
+    text-decoration: none;
+    padding: 10px; 
+    border-radius: 8px; 
+    font-weight: 700;
+    font-size: 0.8rem; 
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); transform: translateY(-2px); }
+.btn.disabled { background: #334155; pointer-events: none; opacity: 0.6; }
+
+.team-section { padding: 2rem 1rem; text-align: center; }
+.section-title { font-size: 1.8rem; margin-bottom: 2rem; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800;}
+.team-grid { display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+.member { display: flex; flex-direction: column; align-items: center; }
+.avatar-container { width: 80px; height: 80px; margin-bottom: 0.8rem; position: relative; }
+.avatar-container img { width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); }
+.glow { position: absolute; inset: -3px; border-radius: 50%; background: var(--primary); filter: blur(15px); opacity: 0.5; animation: pulseGlow 3s infinite; z-index: -1; }
+.glow.pink { background: var(--secondary); } .glow.purple { background: #8b5cf6; }
+.member h3 { margin: 0; font-size: 1rem; }
+.role { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 3px; }
+.member:nth-child(2) .role { color: var(--secondary); } .member:nth-child(3) .role { color: #8b5cf6; }
+
+footer { text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.3); font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; }
+
+@keyframes titleFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes pulseGlow { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 0.7; } }
