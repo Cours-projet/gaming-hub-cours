@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Game Hub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div id="adminApp">
+        <!-- Écran de connexion admin -->
+        <div id="adminLogin" class="admin-login">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>🎮 Game Hub</h1>
+                    <h2>Dashboard Administrateur</h2>
+                </div>
+                
+                <form id="adminLoginForm" class="admin-form">
+                    <div class="form-group">
+                        <label for="adminEmail">Email</label>
+                        <input type="email" id="adminEmail" required placeholder="owner@gamehub.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPassword">Mot de passe</label>
+                        <input type="password" id="adminPassword" required placeholder="GameHub2025!">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Se connecter</button>
+                </form>
+                
+                <div id="loginMessage" class="message"></div>
+                
+                <div class="login-info">
+                    <p><strong>Compte par défaut :</strong></p>
+                    <p>Email: owner@gamehub.com</p>
+                    <p>Mot de passe: <span id="passwordDisplay">••••••••••••</span>
+                       <button type="button" id="togglePassword" class="btn-toggle">👁️</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard principal -->
+        <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>🎮 Game Hub Admin</h1>
+                </div>
+                <div class="header-right">
+                    <span id="adminUsername">Admin</span>
+                    <button id="logoutBtn" class="btn btn-small">Déconnexion</button>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="admin-nav">
+                <button class="nav-btn active" data-section="dashboard">📊 Dashboard</button>
+                <button class="nav-btn" data-section="users">👥 Utilisateurs</button>
+                <button class="nav-btn" data-section="serverAccounts">🖥️ Comptes serveur</button>
+                <button class="nav-btn" data-section="games">🎮 Jeux</button>
+                <button class="nav-btn" data-section="logs">📋 Logs</button>
+                <button class="nav-btn" data-section="settings">⚙️ Paramètres</button>
+            </nav>
+
+            <!-- Contenu principal -->
+            <main class="admin-main">
+                <!-- Section Dashboard -->
+                <section id="dashboardSection" class="admin-section active">
+                    <h2>Vue d'ensemble</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <h3 id="totalUsers">0</h3>
+                                <p>Utilisateurs totaux</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🟢</div>
+                            <div class="stat-content">
+                                <h3 id="activeUsers">0</h3>
+                                <p>Actifs (24h)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">🆕</div>
+                            <div class="stat-content">
+                                <h3 id="newUsers">0</h3>
+                                <p>Nouveaux (7j)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-content">
+                                <h3 id="totalPlayTime">0</h3>
+                                <p>Minutes jouées</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="recent-activity">
+                            <h3>Activité récente</h3>
+                            <div id="recentLogs" class="logs-list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Utilisateurs -->
+                <section id="usersSection" class="admin-section">
+                    <h2>Gestion des utilisateurs</h2>
+                    
+                    <div class="section-controls">
+                        <input type="text" id="userSearch" placeholder="Rechercher un utilisateur...">
+                        <button id="refreshUsers" class="btn">🔄 Actualiser</button>
+                        <button id="createServerAccount" class="btn btn-primary">👤 Créer un compte serveur</button>
+                    </div>
+                    
+                    <div class="users-table-container">
+                        <table id="usersTable" class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Niveau</th>
+                                    <th>Temps de jeu</th>
+                                    <th>Dernière connexion</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Section Comptes Serveur -->
+                <section id="serverAccountsSection" class="admin-section">
+                    <h2>Comptes serveur</h2>
+                    <p class="section-description">Comptes créés par l'administrateur pour les services et bots</p>
+                    
+                    <div class="section-controls">
+                        <button id="refreshServerAccounts" class="btn">🔄 Actualiser</button>
+                    </div>
+                    
+                    <div class="server-accounts-container">
+                        <table id="serverAccountsTable" class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom d'utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Créé le</th>
+                                    <th>Créé par</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="serverAccountsTableBody">
+                                <!-- Données chargées dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Section Jeux -->
+                <section id="gamesSection" class="admin-section">
+                    <h2>Statistiques des jeux</h2>
+                    
+                    <div class="games-stats">
+                        <div class="game-card">
+                            <h3>🎯 Minecraft</h3>
+                            <div class="game-stats">
+                                <p>Joueurs: <span id="minecraftPlayers">0</span></p>
+                                <p>Temps total: <span id="minecraftTime">0</span>min</p>
+                            </div>
+                        </div>
+                        
+                        <div class="game-card">
+                            <h3>📁 Upload Labs</h3>
+                            <div class="game-stats">
+                                <p>Joueurs: <span id="uploadPlayers">0</span></p>
+                                <p>Temps total: <span id="uploadTime">0</span>min</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Logs -->
+                <section id="logsSection" class="admin-section">
+                    <h2>Journaux d'activité</h2>
+                    
+                    <div class="section-controls">
+                        <select id="logFilter">
+                            <option value="">Tous les logs</option>
+                            <option value="user_login">Connexions</option>
+                            <option value="user_registered">Inscriptions</option>
+                            <option value="progress_saved">Sauvegardes</option>
+                            <option value="login_failed">Échecs de connexion</option>
+                        </select>
+                        <button id="refreshLogs" class="btn">🔄 Actualiser</button>
+                    </div>
+                    
+                    <div id="logsContainer" class="logs-container"></div>
+                </section>
+
+                <!-- Section Paramètres -->
+                <section id="settingsSection" class="admin-section">
+                    <h2>Paramètres du serveur</h2>
+                    
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <h3>🔧 Configuration</h3>
+                            <p>Port: <strong>3000</strong></p>
+                            <p>Mode: <strong>Production</strong></p>
+                            <p>Version: <strong>1.0.0</strong></p>
+                        </div>
+                        
+                        <div class="setting-card">
+                            <h3>💾 Base de données</h3>
+                            <p>Type: <strong>JSON Files</strong></p>
+                            <p>Utilisateurs: <strong id="dbUsers">0</strong></p>
+                            <p>Progression: <strong id="dbProgress">0</strong></p>
+                        </div>
+                        
+                        <div class="setting-card">
+                            <h3>🛡️ Sécurité</h3>
+                            <p>JWT: <strong>Activé</strong></p>
+                            <p>Bcrypt: <strong>Activé</strong></p>
+                            <p>CORS: <strong>Activé</strong></p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal de création de compte serveur -->
+    <div id="createAccountModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Créer un compte serveur</h2>
+            <p class="modal-description">Créer un compte pour un service, bot ou application serveur</p>
+            
+            <form id="createAccountForm">
+                <div class="form-group">
+                    <label for="serverUsername">Nom d'utilisateur</label>
+                    <input type="text" id="serverUsername" required placeholder="Ex: bot-minecraft, service-backup">
+                </div>
+                
+                <div class="form-group">
+                    <label for="serverEmail">Email</label>
+                    <input type="email" id="serverEmail" required placeholder="Ex: bot@gamehub.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="serverPassword">Mot de passe</label>
+                    <input type="password" id="serverPassword" required minlength="8" placeholder="Minimum 8 caractères">
+                </div>
+                
+                <div class="form-group">
+                    <label for="serverRole">Rôle</label>
+                    <select id="serverRole" required>
+                        <option value="user">Utilisateur standard</option>
+                        <option value="admin">Administrateur</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateAccountModal()">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Créer le compte</button>
+                </div>
+            </form>
+            
+            <div id="createAccountMessage" class="message"></div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

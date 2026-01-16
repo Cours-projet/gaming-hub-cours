@@ -1,0 +1,39 @@
+{
+  "name": "game-hub",
+  "version": "1.0.0",
+  "description": "Hub Gaming avec système d'authentification et sauvegarde de progression",
+  "main": "server.js",
+  "scripts": {
+    "start": "node scripts/start.js",
+    "dev": "nodemon server.js",
+    "server": "node server.js",
+    "admin": "echo \"Dashboard admin: http://localhost:3000/admin\"",
+    "setup": "node scripts/start.js",
+    "test": "echo \"Tests à implémenter\"",
+    "backup": "node scripts/backup.js",
+    "clean": "rm -rf node_modules package-lock.json && npm install"
+  },
+  "keywords": ["gaming", "hub", "nodejs", "authentication", "progress", "dashboard"],
+  "author": "Game Hub Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gamehub/gamehub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gamehub/gamehub/issues"
+  },
+  "homepage": "https://github.com/gamehub/gamehub#readme"
+}

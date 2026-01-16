@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Labs - Game Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/auth.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/game-integration.js"></script>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="loginPrompt" class="login-prompt">
+            <h2>Connexion requise</h2>
+            <p>Connectez-vous pour sauvegarder votre progression dans Upload Labs !</p>
+            <button id="loginPromptBtn" class="btn btn-primary">Se connecter</button>
+            <button id="playOfflineBtn" class="btn btn-secondary">Jouer hors ligne</button>
+        </div>
+
+        <div id="gameInterface" style="display: none;">
+            <div class="game-header">
+                <h1>Upload Labs</h1>
+                <div class="game-stats">
+                    <span id="playerLevel">Niveau: 1</span>
+                    <span id="filesUploaded">Fichiers: 0</span>
+                    <span id="playTime">Temps: 0min</span>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div id="gameCanvas">
+                    <div class="placeholder-game">
+                        <h3>📁 Upload Labs</h3>
+                        <p>Jeu de logistique numérique avec sauvegarde automatique !</p>
+                        
+                        <div class="game-actions">
+                            <button id="uploadFileBtn" class="btn">Télécharger fichier (+1)</button>
+                            <button id="completeLabBtn" class="btn">Compléter lab</button>
+                            <button id="unlockToolBtn" class="btn">Débloquer outil</button>
+                            <button id="saveBtn" class="btn btn-primary">Sauvegarder</button>
+                            <a href="index.html" class="btn btn-secondary">Jouer au vrai jeu</a>
+                        </div>
+
+                        <div class="progress-display">
+                            <h4>Progression Upload Labs:</h4>
+                            <pre id="progressDisplay">Chargement...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class UploadLabsGame {
+            constructor() {
+                this.gameIntegration = new GameIntegration('upload-labs');
+                this.isOffline = false;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.checkAuthStatus();
+                
+                document.addEventListener('progressLoaded', (e) => {
+                    if (e.detail.game === 'upload-labs') {
+                        this.onProgressLoaded(e.detail.data);
+                    }
+                });
+
+                document.addEventListener('userLoggedOut', () => {
+                    this.showLoginPrompt();
+                });
+            }
+
+            bindEvents() {
+                document.getElementById('loginPromptBtn').addEventListener('click', () => {
+                    window.GameHubAuth.showModal();
+                });
+
+                document.getElementById('playOfflineBtn').addEventListener('click', () => {
+                    this.playOffline();
+                });
+
+                document.getElementById('uploadFileBtn').addEventListener('click', () => {
+                    this.uploadFile();
+                });
+
+                document.getElementById('completeLabBtn').addEventListener('click', () => {
+                    this.completeLab();
+                });
+
+                document.getElementById('unlockToolBtn').addEventListener('click', () => {
+                    this.unlockTool();
+                });
+
+                document.getElementById('saveBtn').addEventListener('click', () => {
+                    this.saveProgress();
+                });
+            }
+
+            checkAuthStatus() {
+                if (window.GameHubAuth.isLoggedIn()) {
+                    this.showGameInterface();
+                } else {
+                    this.showLoginPrompt();
+                }
+            }
+
+            showLoginPrompt() {
+                document.getElementById('loginPrompt').style.display = 'block';
+                document.getElementById('gameInterface').style.display = 'none';
+            }
+
+            showGameInterface() {
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('gameInterface').style.display = 'block';
+                this.updateUI();
+            }
+
+            playOffline() {
+                this.isOffline = true;
+                this.showGameInterface();
+                this.gameIntegration.progress = this.gameIntegration.getDefaultProgress();
+                this.gameIntegration.progress.saveData.filesUploaded = 0;
+                this.gameIntegration.progress.saveData.labsCompleted = 0;
+                this.gameIntegration.progress.saveData.toolsUnlocked = [];
+                this.updateUI();
+            }
+
+            onProgressLoaded(progress) {
+                console.log('Progression Upload Labs chargée:', progress);
+                this.updateUI();
+            }
+
+            updateUI() {
+                const progress = this.gameIntegration.getProgress();
+                if (progress) {
+                    const filesUploaded = progress.saveData.filesUploaded || 0;
+                    const labsCompleted = progress.saveData.labsCompleted || 0;
+                    
+                    document.getElementById('playerLevel').textContent = `Niveau: ${progress.level}`;
+                    document.getElementById('filesUploaded').textContent = `Fichiers: ${filesUploaded}`;
+                    document.getElementById('playTime').textContent = `Temps: ${progress.stats.playTime}min`;
+                    document.getElementById('progressDisplay').textContent = JSON.stringify(progress, null, 2);
+                }
+            }
+
+            uploadFile() {
+                const progress = this.gameIntegration.getProgress();
+                if (progress) {
+                    if (!progress.saveData.filesUploaded) progress.saveData.filesUploaded = 0;
+                    progress.saveData.filesUploaded += 1;
+                    progress.score += 10;
+                    
+                    this.updateUI();
+                    
+                    if (!this.isOffline) {
+                        this.gameIntegration.updateSaveData('filesUploaded', progress.saveData.filesUploaded);
+                        this.gameIntegration.updateScore(progress.score);
+                        
+                        // Succès pour premiers uploads
+                        if (progress.saveData.filesUploaded === 1) {
+                            this.gameIntegration.unlockAchievement('first_upload', 'Premier téléchargement !');
+                        } else if (progress.saveData.filesUploaded === 10) {
+                            this.gameIntegration.unlockAchievement('upload_master', 'Maître du téléchargement');
+                        }
+                    }
+                }
+            }
+
+            completeLab() {
+                const progress = this.gameIntegration.getProgress();
+                if (progress) {
+                    if (!progress.saveData.labsCompleted) progress.saveData.labsCompleted = 0;
+                    progress.saveData.labsCompleted += 1;
+                    progress.level += 1;
+                    progress.score += 100;
+                    
+                    this.updateUI();
+                    
+                    if (!this.isOffline) {
+                        this.gameIntegration.updateSaveData('labsCompleted', progress.saveData.labsCompleted);
+                        this.gameIntegration.updateLevel(progress.level);
+                        this.gameIntegration.updateScore(progress.score);
+                        this.gameIntegration.unlockAchievement(`lab_${progress.saveData.labsCompleted}`, `Lab ${progress.saveData.labsCompleted} terminé !`);
+                    }
+                }
+            }
+
+            unlockTool() {
+                if (this.isOffline) return;
+
+                const tools = [
+                    { id: 'scanner', name: 'Scanner de vulnérabilités' },
+                    { id: 'encoder', name: 'Encodeur avancé' },
+                    { id: 'bypass', name: 'Outil de contournement' },
+                    { id: 'analyzer', name: 'Analyseur de fichiers' },
+                    { id: 'injector', name: 'Injecteur de code' }
+                ];
+
+                const progress = this.gameIntegration.getProgress();
+                if (!progress.saveData.toolsUnlocked) progress.saveData.toolsUnlocked = [];
+
+                const availableTools = tools.filter(tool => !progress.saveData.toolsUnlocked.includes(tool.id));
+                if (availableTools.length > 0) {
+                    const randomTool = availableTools[Math.floor(Math.random() * availableTools.length)];
+                    progress.saveData.toolsUnlocked.push(randomTool.id);
+                    
+                    this.gameIntegration.updateSaveData('toolsUnlocked', progress.saveData.toolsUnlocked);
+                    this.gameIntegration.unlockAchievement(`tool_${randomTool.id}`, `Outil débloqué: ${randomTool.name}`);
+                    this.updateUI();
+                }
+            }
+
+            async saveProgress() {
+                if (this.isOffline) {
+                    alert('Sauvegarde non disponible en mode hors ligne');
+                    return;
+                }
+
+                await this.gameIntegration.saveProgress();
+                alert('Progression Upload Labs sauvegardée !');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new UploadLabsGame();
+        });
+    </script>
+
+    <style>
+        .login-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+        }
+
+        .login-prompt h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .login-prompt p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 400px;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .placeholder-game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        }
+
+        .placeholder-game h3 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .progress-display {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .progress-display h4 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .progress-display pre {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft - Game Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/auth.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/game-integration.js"></script>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="loginPrompt" class="login-prompt">
+            <h2>Connexion requise</h2>
+            <p>Connectez-vous pour sauvegarder votre progression et débloquer des succès !</p>
+            <button id="loginPromptBtn" class="btn btn-primary">Se connecter</button>
+            <button id="playOfflineBtn" class="btn btn-secondary">Jouer hors ligne</button>
+        </div>
+
+        <div id="gameInterface" style="display: none;">
+            <div class="game-header">
+                <h1>Minecraft</h1>
+                <div class="game-stats">
+                    <span id="playerLevel">Niveau: 1</span>
+                    <span id="playerScore">Score: 0</span>
+                    <span id="playTime">Temps: 0min</span>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div id="gameCanvas">
+                    <div class="placeholder-game">
+                        <h3>🎮 Jeu Minecraft</h3>
+                        <p>Votre progression est automatiquement sauvegardée !</p>
+                        
+                        <div class="game-actions">
+                            <button id="gainXpBtn" class="btn">Gagner de l'XP (+10)</button>
+                            <button id="levelUpBtn" class="btn">Monter de niveau</button>
+                            <button id="achievementBtn" class="btn">Débloquer succès</button>
+                            <button id="saveBtn" class="btn btn-primary">Sauvegarder</button>
+                            <a href="index.html" class="btn btn-secondary">Jouer au vrai jeu</a>
+                        </div>
+
+                        <div class="progress-display">
+                            <h4>Progression actuelle:</h4>
+                            <pre id="progressDisplay">Chargement...</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Intégration du jeu Minecraft avec le système d'authentification
+        class MinecraftGame {
+            constructor() {
+                this.gameIntegration = new GameIntegration('minecraft');
+                this.isOffline = false;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.checkAuthStatus();
+                
+                // Écouter les événements d'authentification
+                document.addEventListener('progressLoaded', (e) => {
+                    if (e.detail.game === 'minecraft') {
+                        this.onProgressLoaded(e.detail.data);
+                    }
+                });
+
+                document.addEventListener('userLoggedOut', () => {
+                    this.showLoginPrompt();
+                });
+            }
+
+            bindEvents() {
+                document.getElementById('loginPromptBtn').addEventListener('click', () => {
+                    window.GameHubAuth.showModal();
+                });
+
+                document.getElementById('playOfflineBtn').addEventListener('click', () => {
+                    this.playOffline();
+                });
+
+                // Actions de jeu de démonstration
+                document.getElementById('gainXpBtn').addEventListener('click', () => {
+                    this.gainXP(10);
+                });
+
+                document.getElementById('levelUpBtn').addEventListener('click', () => {
+                    this.levelUp();
+                });
+
+                document.getElementById('achievementBtn').addEventListener('click', () => {
+                    this.unlockRandomAchievement();
+                });
+
+                document.getElementById('saveBtn').addEventListener('click', () => {
+                    this.saveProgress();
+                });
+            }
+
+            checkAuthStatus() {
+                if (window.GameHubAuth.isLoggedIn()) {
+                    this.showGameInterface();
+                } else {
+                    this.showLoginPrompt();
+                }
+            }
+
+            showLoginPrompt() {
+                document.getElementById('loginPrompt').style.display = 'block';
+                document.getElementById('gameInterface').style.display = 'none';
+            }
+
+            showGameInterface() {
+                document.getElementById('loginPrompt').style.display = 'none';
+                document.getElementById('gameInterface').style.display = 'block';
+                this.updateUI();
+            }
+
+            playOffline() {
+                this.isOffline = true;
+                this.showGameInterface();
+                this.gameIntegration.progress = this.gameIntegration.getDefaultProgress();
+                this.updateUI();
+            }
+
+            onProgressLoaded(progress) {
+                console.log('Progression Minecraft chargée:', progress);
+                this.updateUI();
+            }
+
+            updateUI() {
+                const progress = this.gameIntegration.getProgress();
+                if (progress) {
+                    document.getElementById('playerLevel').textContent = `Niveau: ${progress.level}`;
+                    document.getElementById('playerScore').textContent = `Score: ${progress.score}`;
+                    document.getElementById('playTime').textContent = `Temps: ${progress.stats.playTime}min`;
+                    document.getElementById('progressDisplay').textContent = JSON.stringify(progress, null, 2);
+                }
+            }
+
+            gainXP(amount) {
+                const progress = this.gameIntegration.getProgress();
+                if (progress) {
+                    progress.score += amount;
+                    this.updateUI();
+                    
+                    if (!this.isOffline) {
+                        this.gameIntegration.updateScore(progress.score);
+                    }
+                }
+            }
+
+            levelUp() {
+                const progress = this.gameIntegration.getProgress();
+                if (progress) {
+                    progress.level += 1;
+                    this.updateUI();
+                    
+                    if (!this.isOffline) {
+                        this.gameIntegration.updateLevel(progress.level);
+                        this.gameIntegration.unlockAchievement(`level_${progress.level}`, `Niveau ${progress.level} atteint !`);
+                    }
+                }
+            }
+
+            unlockRandomAchievement() {
+                if (this.isOffline) return;
+
+                const achievements = [
+                    { id: 'first_block', name: 'Premier bloc cassé' },
+                    { id: 'first_craft', name: 'Premier craft réalisé' },
+                    { id: 'explorer', name: 'Explorateur du monde' },
+                    { id: 'builder', name: 'Architecte en herbe' },
+                    { id: 'miner', name: 'Mineur expérimenté' }
+                ];
+
+                const randomAchievement = achievements[Math.floor(Math.random() * achievements.length)];
+                this.gameIntegration.unlockAchievement(randomAchievement.id, randomAchievement.name);
+            }
+
+            async saveProgress() {
+                if (this.isOffline) {
+                    alert('Sauvegarde non disponible en mode hors ligne');
+                    return;
+                }
+
+                await this.gameIntegration.saveProgress();
+                alert('Progression sauvegardée !');
+            }
+        }
+
+        // Démarrer le jeu quand la page est chargée
+        document.addEventListener('DOMContentLoaded', () => {
+            new MinecraftGame();
+        });
+    </script>
+
+    <style>
+        .login-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .login-prompt h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .login-prompt p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 400px;
+        }
+
+        .login-prompt .btn {
+            margin: 0.5rem;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .placeholder-game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .progress-display {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .progress-display h4 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .progress-display pre {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+    </style>
+</body>
+</html>
