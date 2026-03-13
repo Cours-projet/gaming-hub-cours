@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres - PlayHub</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo-section">
+                <img src="assets/images/logo.png" alt="PlayHub">
+                <h1>PlayHub</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Accueil</a>
+                <a href="about.html">À Propos</a>
+                <a href="support.html">Support</a>
+                <a href="settings.html" class="active">Paramètres</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" style="padding: 80px 0 40px;">
+        <div class="hero-content">
+            <h1>PARAMÈTRES</h1>
+            <p>Personnalisez votre expérience de jeu</p>
+        </div>
+    </section>
+
+    <!-- Content -->
+    <section style="padding: 40px 20px; max-width: 900px; margin: 0 auto;">
+        
+        <!-- Paramètres de Jeu -->
+        <div style="background: rgba(0, 0, 0, 0.8); border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 15px; padding: 40px; margin-bottom: 30px;">
+            <h2 style="color: #8b5cf6; font-size: 1.8rem; margin-bottom: 30px;">⚙️ Paramètres de Jeu</h2>
+            
+            <!-- Difficulté -->
+            <div style="margin-bottom: 30px;">
+                <label style="color: #fff; font-weight: 600; display: block; margin-bottom: 10px;">Difficulté</label>
+                <select id="difficulty" style="width: 100%; padding: 12px; background: rgba(139, 92, 246, 0.1); border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 8px; color: #fff; font-size: 1rem;">
+                    <option value="easy">Facile (Faim/Soif lente)</option>
+                    <option value="normal" selected>Normal</option>
+                    <option value="hard">Difficile (Faim/Soif rapide)</option>
+                </select>
+            </div>
+
+            <!-- Vitesse jour/nuit -->
+            <div style="margin-bottom: 30px;">
+                <label style="color: #fff; font-weight: 600; display: block; margin-bottom: 10px;">
+                    Vitesse Jour/Nuit: <span id="daynight-value" style="color: #8b5cf6;">Normal</span>
+                </label>
+                <input type="range" id="daynight-speed" min="1" max="10" value="5" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; color: var(--text-dim); font-size: 0.85rem; margin-top: 5px;">
+                    <span>Très lent</span>
+                    <span>Très rapide</span>
+                </div>
+            </div>
+
+            <!-- Volume -->
+            <div style="margin-bottom: 30px;">
+                <label style="color: #fff; font-weight: 600; display: block; margin-bottom: 10px;">
+                    Volume: <span id="volume-value" style="color: #8b5cf6;">50%</span>
+                </label>
+                <input type="range" id="volume" min="0" max="100" value="50" style="width: 100%;">
+            </div>
+
+            <!-- Affichage FPS -->
+            <div style="margin-bottom: 20px;">
+                <label style="color: #fff; font-weight: 600; display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="show-fps" style="margin-right: 10px; width: 20px; height: 20px; cursor: pointer;">
+                    Afficher les FPS
+                </label>
+            </div>
+
+            <!-- Afficher mini-map -->
+            <div style="margin-bottom: 20px;">
+                <label style="color: #fff; font-weight: 600; display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="show-minimap" checked style="margin-right: 10px; width: 20px; height: 20px; cursor: pointer;">
+                    Afficher la mini-map
+                </label>
+            </div>
+
+            <!-- Notifications -->
+            <div style="margin-bottom: 30px;">
+                <label style="color: #fff; font-weight: 600; display: flex; align-items: center; cursor: pointer;">
+                    <input type="checkbox" id="show-notifications" checked style="margin-right: 10px; width: 20px; height: 20px; cursor: pointer;">
+                    Afficher les notifications
+                </label>
+            </div>
+
+            <button id="save-settings" class="btn btn-primary" style="width: 100%;">
+                💾 Sauvegarder les Paramètres
+            </button>
+            <div id="settings-status" style="margin-top: 15px; text-align: center; font-weight: 600;"></div>
+        </div>
+
+        <!-- Contrôles -->
+        <div style="background: rgba(0, 0, 0, 0.8); border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 15px; padding: 40px; margin-bottom: 30px;">
+            <h2 style="color: #8b5cf6; font-size: 1.8rem; margin-bottom: 30px;">🎮 Contrôles</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 8px;">Déplacement</div>
+                    <div style="color: var(--text-dim);">ZQSD ou Flèches</div>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 8px;">Récolter</div>
+                    <div style="color: var(--text-dim);">E</div>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 8px;">Menu Craft</div>
+                    <div style="color: var(--text-dim);">C</div>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 8px;">Placer Structure</div>
+                    <div style="color: var(--text-dim);">F</div>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 8px;">Équiper Outils</div>
+                    <div style="color: var(--text-dim);">1-5</div>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); padding: 15px; border-radius: 8px;">
+                    <div style="color: #8b5cf6; font-weight: 600; margin-bottom: 8px;">Fermer Menu</div>
+                    <div style="color: var(--text-dim);">ESC</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compte -->
+        <div style="background: rgba(0, 0, 0, 0.8); border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 15px; padding: 40px;">
+            <h2 style="color: #8b5cf6; font-size: 1.8rem; margin-bottom: 30px;">👤 Compte</h2>
+            
+            <div id="account-info" style="margin-bottom: 20px;">
+                <!-- Rempli par JS -->
+            </div>
+
+            <button id="reset-progress" class="btn btn-outline" style="margin-right: 10px;">
+                🔄 Réinitialiser la Progression
+            </button>
+            <button id="logout-btn" class="btn btn-outline" style="background: rgba(255, 0, 0, 0.2); border-color: #f00;">
+                🚪 Déconnexion
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 PlayHub - Lycée Albert Einstein</p>
+        <p>Développé par Tomy (Lead Dev), Tom (Dev) & Lancelot (Manager)</p>
+    </footer>
+
+    <script src="js/settings.js"></script>
+</body>
+</html>

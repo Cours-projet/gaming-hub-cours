@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu - PlayHub</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="game-page">
+    <!-- Header -->
+    <div class="game-header">
+        <div class="game-stats">
+            <span id="player-name">Joueur</span>
+            <span id="game-mode">Mode</span>
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                </svg>
+                <span id="player-hp">100</span>
+            </span>
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="8.5" cy="7" r="4"/>
+                    <polyline points="17 11 19 13 23 9"/>
+                </svg>
+                <span id="player-kills">0</span>
+            </span>
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle;">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <span id="game-time">0:00</span>
+            </span>
+        </div>
+        <a href="index.html" class="btn btn-outline" style="padding: 8px 20px; font-size: 0.9rem;">Quitter</a>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+        <div style="flex: 1;">
+            <canvas id="gameCanvas" width="1200" height="800"></canvas>
+            
+            <div style="background: rgba(0, 0, 0, 0.9); border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 10px; padding: 15px; margin-top: 15px; max-width: 1200px;">
+                <div id="chat-messages" style="height: 100px; overflow-y: auto; color: #fff; font-size: 0.9rem;"></div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="game-sidebar">
+            <!-- Stats -->
+            <div class="sidebar-panel">
+                <h3>Statistiques</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Santé</span>
+                    <span class="stat-value"><span id="player-hp-2">100</span>/100</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Faim</span>
+                    <span class="stat-value"><span id="hunger-value">100</span>/100</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Soif</span>
+                    <span class="stat-value"><span id="thirst-value">100</span>/100</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Éliminations</span>
+                    <span class="stat-value" id="player-kills-2">0</span>
+                </div>
+            </div>
+
+            <!-- Inventaire -->
+            <div class="sidebar-panel">
+                <h3>Inventaire</h3>
+                <div class="stat-row">
+                    <span class="stat-label">🌲 Bois</span>
+                    <span class="stat-value" id="wood-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🪨 Pierre</span>
+                    <span class="stat-value" id="stone-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">⛏️ Minerai Fer</span>
+                    <span class="stat-value" id="iron-value">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🔧 Outil</span>
+                    <span class="stat-value" id="equipped-tool">Main</span>
+                </div>
+            </div>
+
+            <!-- Contrôles -->
+            <div class="sidebar-panel">
+                <h3>Contrôles</h3>
+                <div style="font-size: 0.85rem; line-height: 2; color: var(--text-dim);">
+                    <div>ZQSD / Flèches - Déplacer</div>
+                    <div>E - Récolter ressources</div>
+                    <div>C - Menu Craft</div>
+                    <div>F - Placer structure</div>
+                    <div>1-5 - Équiper outil</div>
+                    <div>ESC - Fermer menu</div>
+                </div>
+            </div>
+
+            <!-- Objectif -->
+            <div class="sidebar-panel">
+                <h3>Craft & Survie</h3>
+                <p style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6;">
+                    Récoltez du bois et de la pierre pour crafter des outils. Utilisez les pioches pour miner le fer. Craftez une table de craft pour débloquer plus de recettes!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/crafting-system.js"></script>
+    <script src="js/survival-game.js"></script>
+    <script>
+        // Sync stats
+        setInterval(() => {
+            document.getElementById('player-hp-2').textContent = document.getElementById('player-hp').textContent;
+            document.getElementById('player-kills-2').textContent = document.getElementById('player-kills').textContent;
+            
+            // Update equipped tool display
+            if (typeof game !== 'undefined') {
+                const toolNames = {
+                    'hand': 'Main',
+                    'wooden_pickaxe': 'Pioche Bois',
+                    'stone_pickaxe': 'Pioche Pierre',
+                    'iron_pickaxe': 'Pioche Fer',
+                    'wooden_axe': 'Hache Bois',
+                    'stone_axe': 'Hache Pierre'
+                };
+                const toolEl = document.getElementById('equipped-tool');
+                if (toolEl) {
+                    toolEl.textContent = toolNames[game.player.equippedTool] || 'Main';
+                }
+            }
+        }, 100);
+    </script>
+</body>
+</html>
